@@ -1,0 +1,137 @@
+--[[ Lua code. See documentation: https://api.tabletopsimulator.com/ --
+This script is online at https://github.com/taylorodw/pusoy-dos
+
+I made this script in 2019 to play my favorite card game with friends.
+It is tied to Tabletop Simulator, made by Beserk Games.
+
+It won't run without assets loaded from the Steam workshop, but you can 
+change the item GUID numbers to make it work with other assets.
+
+The script creates actions to run on a deck of cards. Then it creates buttons to execute the actions.
+
+This first section defines the buttons.]]
+button_parameters = {}
+button_parameters.click_function = 'buttonClicked'
+button_parameters.function_owner = nil
+button_parameters.label = "Deal"
+button_parameters.position = {-1.3, -0.1, 0}
+button_parameters.rotation = {0, 90, 0}
+button_parameters.width = 800
+button_parameters.height = 400
+button_parameters.font_size = 350
+button_parameters.color = 'Red'
+button_parameters.font_color = 'White'
+
+newDeck_parameters = {}
+newDeck_parameters.click_function = 'newDeckClicked'
+newDeck_parameters.function_owner = nil
+newDeck_parameters.label = "New Deck"
+newDeck_parameters.position = {1.22, -0.1, 0}
+newDeck_parameters.rotation = {0, 90, 0}
+newDeck_parameters.width = 1600
+newDeck_parameters.height = 400
+newDeck_parameters.font_size = 350
+newDeck_parameters.color = 'Red'
+newDeck_parameters.font_color = 'White'
+
+reset_parameters = {}
+reset_parameters.click_function = 'resetClicked'
+reset_parameters.function_owner = nil
+reset_parameters.label = "Reset"
+reset_parameters.position = {-2.1, -0.1, 0}
+reset_parameters.rotation = {0, 90, 0}
+reset_parameters.width = 875
+reset_parameters.height = 400
+reset_parameters.font_size = 350
+reset_parameters.color = 'Red'
+reset_parameters.font_color = 'White'
+
+count_parameters = {}
+count_parameters.click_function = 'counterClicked'
+count_parameters.function_owner = nil
+count_parameters.label = "Add Counter"
+count_parameters.position = {2.05, -0.1, 0}
+count_parameters.rotation = {0, 90, 0}
+count_parameters.width = 1900
+count_parameters.height = 400
+count_parameters.font_size = 350
+count_parameters.color = 'Red'
+count_parameters.font_color = 'White'
+
+--[[This defines the objects that will load]]
+
+deckParams = {
+    type = "Deck",
+    rotation = {x=0, y=0, z=180}
+    }
+
+countParams = {
+    type = "Counter",
+    rotation = {x=0, y=0, z=0}
+    }
+
+cheeseParams = {
+    type = "BlockTriangle",
+    color = "Yellow",
+    rotation = {x=90, y=180, z=-90},
+    position = {x=4.05, y=0, z=0.32}
+    }
+
+cheesescale = {0.5, 0.5, 0.3}
+
+mycheese = spawnObject(cheeseParams)
+mycheese.setColorTint('Yellow')
+mycheese.setScale(cheesescale)
+mycheese.setName("Cheeser's cheese")
+
+
+--[[ The onLoad event is called after the game save finishes loading. 
+This part actually draws the buttons defined earlier.]]
+function onLoad()
+
+
+
+    getObjectFromGUID('d01d56').setName("Cheeser, the Deal Rat")
+    getObjectFromGUID('d01d56').createButton(button_parameters)
+    getObjectFromGUID('d01d56').createButton(newDeck_parameters)
+    getObjectFromGUID('d01d56').createButton(reset_parameters)
+    getObjectFromGUID('d01d56').createButton(count_parameters)
+
+end
+--[[This one shuffles and deals, which was the original purpose of the script.]]
+function buttonClicked()
+    
+    print("Shuffling...")
+    mydeck.shuffle()
+    getObjectFromGUID('d01d56').RPGFigurine.attack()
+    mydeck.shuffle()
+    mydeck.shuffle()
+    mydeck.shuffle()
+    mydeck.shuffle()
+    print("Dealing!")
+    mydeck.dealToAll(13)
+end
+--[[Creates a new deck, sometimes they get messed up.]]
+function newDeckClicked()
+    print("New deck...")
+    getObjectFromGUID('d01d56').RPGFigurine.attack()
+    mydeck = spawnObject(deckParams)
+end
+--[[Cleans up the table after a round.]]
+function resetClicked()
+    print("Resetting deck...")
+    getObjectFromGUID('d01d56').RPGFigurine.attack()
+    mydeck.reset()
+end
+--[[A counter allows scorekeeping.]]
+function counterClicked()
+    print("Adding counter...")
+    getObjectFromGUID('d01d56').RPGFigurine.attack()
+    spawnObject(countParams)
+end
+
+--[[ The onUpdate event is called once per frame. --]]
+function onUpdate()
+    --[[ print('onUpdate loop!') --]]
+
+end
